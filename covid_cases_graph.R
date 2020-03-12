@@ -11,21 +11,32 @@ data$Country %<>% as.character() # reformats to enable the next two lines:
 data[data$Country == "Korea, South",1] <- "South Korea"
 data[data$Country == "United Kingdom",1] <- "UK"
 data$Country %<>% as.factor()
-data <- data[ data[,ncol(data)] >= as.integer(data[data$Country == "UK",ncol(data)]), ] # removes countries that don't have as many cases as the UK yet
+data <- data[ data[,ncol(data)] >= as.integer(data[data$Country == "UK",ncol(data)]), ]
 
-data <- melt(data, variable_name = 'Country') %>% # reshapes the data frame as 'long' panel
+data <- melt(data, variable_name = 'Country') %>% # reshapes as 'long' panel
   filter(value > 99) %>% select(-"variable") # removes rows with fewer than 100 cases
 colnames(data)[2] <- c('Cases')
 
 data$days = 0
 for (i in levels(data$Country)) {
   data$days[data$Country == i] = seq(0, length(data$days[data$Country == i]))
-} # creates a "number of days since 100 cases" variable
+} # creates "Number of days since 100 cases" variable
 
-ggplot(data %>% filter(Country != "China"), aes(y=cases, x = days, group = Country)) + 
-  geom_line(aes(col = Country)) +
-  geom_line(data = data[data$Country == "UK",], aes(y=cases, x = days), col = 'red', size = 1.5) +
+colours <- c("France" = "grey",
+             "Germany" = "grey",
+             "Iran" = "green",
+             "Italy" = "red",
+             "Japan" = "purple",
+             "Netherlands" = "grey",
+             "Norway" = "grey",
+             "South Korea" = "black",
+             "Spain" = "grey",
+             "Sweden" = "grey",
+             "Switzerland" = "grey",
+             "UK" = "blue",
+             "US" = "orange")
+ggplot(data %>% filter(Country != "China"), aes(y=Cases, x = days, group = Country, col = Country)) + 
+  geom_line(size = 1.1) +
+  scale_color_manual(values = colours) +
   scale_y_log10() +
   xlab("Days since reaching 100 cases")
-
-
