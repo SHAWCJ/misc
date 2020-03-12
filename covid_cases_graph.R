@@ -22,21 +22,13 @@ for (i in levels(data$Country)) {
   data$days[data$Country == i] = seq(0, length(data$days[data$Country == i]))
 } # creates "Number of days since 100 cases" variable
 
-colours <- c("France" = "grey",
-             "Germany" = "grey",
-             "Iran" = "green",
-             "Italy" = "red",
-             "Japan" = "purple",
-             "Netherlands" = "grey",
-             "Norway" = "grey",
-             "South Korea" = "black",
-             "Spain" = "grey",
-             "Sweden" = "grey",
-             "Switzerland" = "grey",
-             "UK" = "blue",
-             "US" = "orange")
-ggplot(data %>% filter(Country != "China"), aes(y=Cases, x = days, group = Country, col = Country)) + 
-  geom_line(size = 1) +
-  scale_color_manual(values = colours) +
+uk.data <- data %>% filter(Country == "UK")
+interesting.data <- data %>% filter(Country %in% c("Iran","Italy","Japan","South Korea","US"))
+other.data <- data %>% filter(Country %in% c("France","Germany","Netherlands","Norway","Spain","Sweden","Switzerland"))
+                                    
+ggplot() + 
+  geom_line(data = other.data, aes(x = days, y = Cases, group = Country), col = "grey") +
+  geom_line(data = interesting.data, aes(x = days, y = Cases, group = Country, col = Country)) +
+  geom_line(data = uk.data, aes(x = days, y = Cases), col = "red", size = 1.1) +
   scale_y_log10() +
   xlab("Days since reaching 100 cases")
