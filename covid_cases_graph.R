@@ -36,7 +36,7 @@ colours <- c("France" = "grey",
              "UK" = "blue",
              "US" = "orange")
 ggplot(data %>% filter(Country != "China"), aes(y=Cases, x = days, group = Country, col = Country)) + 
-  geom_line(size = 1.1) +
+  geom_line(size = 1) +
   scale_color_manual(values = colours) +
   scale_y_log10() +
   xlab("Days since reaching 100 cases")
